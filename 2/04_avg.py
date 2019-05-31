@@ -372,6 +372,6 @@ if __name__ == "__main__":
             size -= 1
             rbtree.remove(int(parts[1]))
 
-        res.append(rbtree.ceil(mean))
+        res.append(rbtree.ceil(round(mean)))
     for r in res:
         print(r)
