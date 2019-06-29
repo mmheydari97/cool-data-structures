@@ -7,82 +7,66 @@ public class Main_4 {
     public static void main(String[] args) {
         int sizeN;
         Scanner input = new Scanner(System.in);
-
         // number of cities
         sizeN = input.nextInt();
-        
         // all cities
-        ArrayList<node> cities = new ArrayList<>();
-        
+        ArrayList<Node> cities = new ArrayList<>();
         // cities to be processed
-        ArrayList<node> queue = new ArrayList<>();
-
+        ArrayList<Node> queue = new ArrayList<>();
         // number of edges
         int sizeM = input.nextInt();
-        
-        // we also have a dummy node with index 0
+        // we also have a dummy Node with index 0
         // initial prices of concert tickets equal cost of the edges
-        // between the dummy node and each city
+        // between the dummy Node and each city
         for (int j = 0; j <= sizeN; j++) {
-            node v = new node(j);
+            Node v = new Node(j);
             cities.add(v);
             queue.add(v);
         }
-
-        // first costs i.e. edges of dummy node
+        // first costs i.e. edges of dummy Node
         for (int i = 1; i <= sizeN ; i++) {
             cities.get(0).add_edge(cities.get(i),input.nextInt());
         }
-
         // edges between cities
         for (int i = 0; i < sizeM ; i++) {
             int u = input.nextInt();
             int v = input.nextInt();
             int val = input.nextInt();
-            
             // if an edge causes improvement we consider it
             if (2*val <= cities.get(0).neighbours.get(cities.get(v)))
                 cities.get(u).add_edge(cities.get(v),2*val);
-
             if (2*val <= cities.get(0).neighbours.get(cities.get(u)))
                 cities.get(v).add_edge(cities.get(u),2*val);
         }
-
         // cities with no neighbors won't be processed
-        for (node v : cities) {
+        for (Node v : cities) {
             if (v.neighbours.keySet().isEmpty())
                 queue.remove(v);
         }
-
-
         cities.get(0).key = 0;
         while (queue.size()!=0){
             build_heap(queue);
-            node u = pop_min(queue);
-            for (node v :cities.get(u.id).neighbours.keySet()) {
+            Node u = pop_min(queue);
+            for (Node v :cities.get(u.id).neighbours.keySet()) {
                 if (v.key > u.key+u.neighbours.get(v)) {
                     v.key = u.key + u.neighbours.get(v);
                 }
             }
         }
-        
         // remove the dummy city
         cities.remove(0);
-
-        for (node c:cities) {
+        for (Node c:cities) {
             System.out.printf("%d ",c.key);
         }
     }
-
     // builds min heap
-    private static void build_heap(ArrayList<node> queue){
+    private static void build_heap(ArrayList<Node> queue){
         for (int i = queue.size()/2; i >=0 ; i--) {
             heapify(queue, i);
         }
     }
-
     // recursive min heapify alogorithm
-    private static void heapify(ArrayList<node> a, int i){
+    private static void heapify(ArrayList<Node> a, int i){
         int l;
         int r;
         int smallest;
@@ -98,28 +82,23 @@ public class Main_4 {
             heapify(a, smallest);
         }
     }
-
-    private static node pop_min(ArrayList<node> queue){
-        node min = queue.get(0);
+    private static Node pop_min(ArrayList<Node> queue){
+        Node min = queue.get(0);
         Collections.swap(queue , 0, queue.size()-1);
         queue.remove(queue.size()-1);
         return min;
     }
-
 }
-
 // represents a city
-class node {
+class Node {
     int id;
-    node(int id){
+    Node(int id){
         this.id = id;
     }
-
     // ar first all edges cost infinity
     int key = Integer.MAX_VALUE;
-    HashMap<node, Integer> neighbours = new HashMap<>();
-    
-    void add_edge(node v, int value){
+    HashMap<Node, Integer> neighbours = new HashMap<>();
+    void add_edge(Node v, int value){
         neighbours.put(v, value);
     }
 }
